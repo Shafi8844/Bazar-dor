@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { useAuth } from "./auth-context";
 
 type AuthFormProps = {

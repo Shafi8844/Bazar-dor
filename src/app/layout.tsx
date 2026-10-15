@@ -5,6 +5,8 @@ import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Providers } from "@/components/providers";
 import { getCategories, getProducts } from "@/lib/products";
+import "react-toastify/dist/ReactToastify.css";
+import "react-marquee-text/dist/styles.css";
 import "./globals.css";
 
 const geistSans = Geist({

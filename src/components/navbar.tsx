@@ -3,7 +3,8 @@
 import { LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
+import MarqueeText from "react-marquee-text";
 import { compactUnitLabel, formatTaka, type Category, type Product, toBanglaNumber } from "@/lib/products";
 import { useAuth } from "./auth-context";
 
@@ -85,17 +86,17 @@ export function Navbar({ categories, products }: { categories: Category[]; produ
         </nav>
       </div>
 
-      <div className="ticker overflow-hidden border-t border-emerald-100 bg-slate-950 py-2 text-white">
-        <div className="ticker-track flex w-max gap-8">
-          {[...tickerItems, ...tickerItems].map((product, index) => (
-            <span key={`${product.slug}-${index}`} className="text-sm font-bold">
+      <div className="ticker overflow-hidden border-t border-emerald-100 bg-white py-2 text-slate-900">
+        <MarqueeText className="text-sm font-bold" duration={32} pauseOnHover>
+          {tickerItems.map((product) => (
+            <span key={product.slug}>
               {product.image} {product.nameBn} {formatTaka(product.today)}/{compactUnitLabel(product.unit)}{" "}
-              <span className={product.change.pct >= 0 ? "text-emerald-300" : "text-rose-300"}>
+              <span className={product.change.pct >= 0 ? "text-emerald-700" : "text-rose-700"}>
                 {product.change.pct >= 0 ? "▲" : "▼"} {toBanglaNumber(Math.abs(product.change.pct).toFixed(1))}%
               </span>
             </span>
           ))}
-        </div>
+        </MarqueeText>
       </div>
     </header>
   );

@@ -22,10 +22,8 @@ const mongoDb = mongoClient.db(process.env.MONGO_DB_NAME || "bazar-dor");
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
-
-if (!googleClientId || !googleClientSecret) {
-  throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be configured");
-}
+const githubClientId = process.env.GITHUB_CLIENT_ID;
+const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
 
 export const auth = betterAuth({
   database: mongodbAdapter(mongoDb),
@@ -38,13 +36,21 @@ export const auth = betterAuth({
     autoSignIn: false,
   },
   socialProviders: {
-    google: {
-      clientId: googleClientId,
-      clientSecret: googleClientSecret,
-    },
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID || "demo-github-client-id",
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || "demo-github-client-secret",
-    },
+    ...(googleClientId && googleClientSecret
+      ? {
+          google: {
+            clientId: googleClientId,
+            clientSecret: googleClientSecret,
+          },
+        }
+      : {}),
+    ...(githubClientId && githubClientSecret
+      ? {
+          github: {
+            clientId: githubClientId,
+            clientSecret: githubClientSecret,
+          },
+        }
+      : {}),
   },
 });
