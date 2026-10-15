@@ -24,13 +24,20 @@ const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const githubClientId = process.env.GITHUB_CLIENT_ID;
 const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
+const authSecret = process.env.BETTER_AUTH_SECRET;
+const deploymentHost = process.env.VERCEL_URL;
+const authBaseURL =
+  process.env.BETTER_AUTH_URL ||
+  (deploymentHost ? `https://${deploymentHost}` : "http://localhost:3000");
+
+if (process.env.NODE_ENV === "production" && !authSecret) {
+  throw new Error("BETTER_AUTH_SECRET must be configured in production");
+}
 
 export const auth = betterAuth({
   database: mongodbAdapter(mongoDb),
-  secret:
-    process.env.BETTER_AUTH_SECRET ||
-    "bazar-dor-local-development-secret-please-replace",
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  secret: authSecret || "bazar-dor-local-development-secret-please-replace",
+  baseURL: authBaseURL,
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
