@@ -20,6 +20,13 @@ if (process.env.NODE_ENV !== "production") {
 
 const mongoDb = mongoClient.db(process.env.MONGO_DB_NAME || "bazar-dor");
 
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+if (!googleClientId || !googleClientSecret) {
+  throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be configured");
+}
+
 export const auth = betterAuth({
   database: mongodbAdapter(mongoDb),
   secret:
@@ -32,8 +39,8 @@ export const auth = betterAuth({
   },
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || "demo-google-client-id",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "demo-google-client-secret",
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
     },
     github: {
       clientId: process.env.GITHUB_CLIENT_ID || "demo-github-client-id",

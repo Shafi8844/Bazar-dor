@@ -42,6 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         async socialSignIn(provider) {
           const result = await authClient.signIn.social({
             provider: provider === "Google" ? "google" : "github",
+            callbackURL: "/",
           });
           if (result.error) throw new Error(result.error.message || "সোশ্যাল সাইন ইন করা যায়নি।");
         },
