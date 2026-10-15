@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== "production") {
   globalForMongo.mongoClient = mongoClient;
 }
 
-const mongoDb = mongoClient.db(process.env.MONGO_DB_NAME || "bazar-dor");
+const mongoDb = mongoClient.db(process.env.MONGO_DB_NAME || "bazar-dor-auth");
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;

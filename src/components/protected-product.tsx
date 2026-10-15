@@ -2,12 +2,12 @@
 
 import { LockKeyhole } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "./auth-context";
+import { authClient } from "@/lib/auth-client";
 
 export function ProtectedProduct({ children }: { children: React.ReactNode }) {
-  const { ready, user } = useAuth();
+  const { data: session, isPending } = authClient.useSession();
 
-  if (!ready) {
+  if (isPending) {
     return (
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
@@ -17,7 +17,7 @@ export function ProtectedProduct({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!user) {
+  if (!session?.user) {
     return (
       <main className="flex-1 bg-slate-50">
         <section className="mx-auto grid min-h-[60vh] max-w-2xl place-items-center px-4 py-12 text-center sm:px-6 lg:px-8">

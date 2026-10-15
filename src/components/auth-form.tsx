@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { toast } from "react-toastify";
-import { useAuth } from "./auth-context";
+import { authClient } from "@/lib/auth-client";
 
 type AuthFormProps = {
   mode: "signin" | "signup";
@@ -12,7 +12,6 @@ type AuthFormProps = {
 
 export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
-  const auth = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -24,11 +23,20 @@ export function AuthForm({ mode }: AuthFormProps) {
 
     try {
       if (mode === "signup") {
-        await auth.signUp(String(form.get("name") || ""), String(form.get("email") || ""), String(form.get("password") || ""));
+        const result = await authClient.signUp.email({
+          name: String(form.get("name") || ""),
+          email: String(form.get("email") || ""),
+          password: String(form.get("password") || ""),
+        });
+        if (result.error) throw new Error(result.error.message || "অ্যাকাউন্ট তৈরি করা যায়নি।");
         toast.success("রেজিস্ট্রেশন সফল হয়েছে। এখন সাইন ইন করুন।");
         router.push("/signin");
       } else {
-        await auth.signIn(String(form.get("email") || ""), String(form.get("password") || ""));
+        const result = await authClient.signIn.email({
+          email: String(form.get("email") || ""),
+          password: String(form.get("password") || ""),
+        });
+        if (result.error) throw new Error(result.error.message || "সাইন ইন করা যায়নি।");
         toast.success("স্বাগতম, আপনি সাইন ইন করেছেন।");
         router.push("/");
       }
@@ -45,7 +53,11 @@ export function AuthForm({ mode }: AuthFormProps) {
     setLoading(true);
     setError("");
     try {
-      await auth.socialSignIn(provider);
+      const result = await authClient.signIn.social({
+        provider: provider === "Google" ? "google" : "github",
+        callbackURL: "/",
+      });
+      if (result.error) throw new Error(result.error.message || "সোশ্যাল সাইন ইন করা যায়নি।");
     } catch (err) {
       const message = err instanceof Error ? err.message : "কিছু ভুল হয়েছে।";
       setError(message);

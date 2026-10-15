@@ -5,18 +5,20 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import MarqueeText from "react-marquee-text";
+import { authClient } from "@/lib/auth-client";
 import { compactUnitLabel, formatTaka, type Category, type Product, toBanglaNumber } from "@/lib/products";
-import { useAuth } from "./auth-context";
 
 export function Navbar({ categories, products }: { categories: Category[]; products: Product[] }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, ready, signOut } = useAuth();
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user ?? null;
   const tickerItems = products.slice(0, 8);
 
   async function handleLogout() {
     try {
-      await signOut();
+      const result = await authClient.signOut();
+      if (result.error) throw new Error(result.error.message || "সাইন আউট করা যায়নি।");
       toast.success("সফলভাবে সাইন আউট হয়েছে।");
       router.push("/");
     } catch (err) {
@@ -37,7 +39,7 @@ export function Navbar({ categories, products }: { categories: Category[]; produ
           </Link>
 
           <div className="flex items-center gap-2">
-            {!ready ? (
+            {isPending ? (
               <div className="h-10 w-40 animate-pulse rounded-lg bg-slate-100" />
             ) : user ? (
               <>
