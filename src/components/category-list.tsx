@@ -1,21 +1,14 @@
 "use client";
 
 import { SlidersHorizontal } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ProductCard } from "./product-card";
-import { SkeletonCard } from "./skeleton-card";
 import { type Product } from "@/lib/products";
 
 type SortMode = "default" | "asc" | "desc";
 
 export function CategoryList({ products }: { products: Product[] }) {
   const [sort, setSort] = useState<SortMode>("default");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setLoading(false), 500);
-    return () => window.clearTimeout(timer);
-  }, []);
 
   const sorted = useMemo(() => {
     const next = [...products];
@@ -52,7 +45,7 @@ export function CategoryList({ products }: { products: Product[] }) {
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {loading ? Array.from({ length: 6 }).map((_, index) => <SkeletonCard key={index} />) : sorted.map((product) => <ProductCard key={product.slug} product={product} />)}
+        {sorted.map((product) => <ProductCard key={product.slug} product={product} />)}
       </div>
     </>
   );

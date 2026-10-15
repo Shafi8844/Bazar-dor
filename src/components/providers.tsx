@@ -1,12 +1,12 @@
 "use client";
 
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "react-hot-toast";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <>
       {children}
-      <ToastContainer position="top-right" />
+      <Toaster position="top-right" />
     </>
   );
 }

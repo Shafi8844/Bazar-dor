@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 import { ChangeBadge } from "@/components/change-badge";
-import { ProtectedProduct } from "@/components/protected-product";
 import { changeValue, formatTaka, getProductBySlug, getProducts, marketAverage, toBanglaNumber, unitLabel } from "@/lib/products";
+import { auth } from "@/lib/auth";
 
 export const instant = false;
 
@@ -16,12 +17,20 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    const query = new URLSearchParams({
+      callbackURL: `/product/${encodeURIComponent(slug)}`,
+      authRequired: "1",
+    });
+    redirect(`/signin?${query.toString()}`);
+  }
+
   const min = Math.min(...product.markets.map((market) => market.min));
   const max = Math.max(...product.markets.map((market) => market.max));
   const avg = marketAverage(product);
 
   return (
-    <ProtectedProduct>
       <main className="flex-1 bg-slate-50">
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <Link href="/" className="text-sm font-extrabold text-emerald-700">← হোমে ফিরুন</Link>
@@ -92,6 +101,5 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </section>
         </section>
       </main>
-    </ProtectedProduct>
   );
 }

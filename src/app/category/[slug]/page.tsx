@@ -1,6 +1,6 @@
-import Link from "next/link";
+import { notFound } from "next/navigation";
 import { CategoryList } from "@/components/category-list";
-import { getCategories, getCategory, getProducts } from "@/lib/products";
+import { getCategories, getProducts } from "@/lib/products";
 
 export const instant = false;
 
@@ -11,22 +11,19 @@ export async function generateStaticParams() {
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const [category, categoryProducts] = await Promise.all([
-    getCategory(slug).catch(() => null),
-    getProducts(slug).catch(() => []),
-  ]);
+  const categories = await getCategories();
+  const category = categories.find((item) => item.slug === slug);
+  if (!category) notFound();
 
-  if (!category || categoryProducts.length === 0) {
+  const categoryProducts = await getProducts(slug);
+
+  if (categoryProducts.length === 0) {
     return (
       <main className="flex-1 bg-slate-50">
         <section className="mx-auto grid min-h-[60vh] max-w-2xl place-items-center px-4 py-12 text-center sm:px-6 lg:px-8">
           <div className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
-            <p className="text-6xl">404</p>
-            <h1 className="mt-4 text-3xl font-black text-slate-950">এই ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি</h1>
-            <p className="mt-3 text-slate-600">ক্যাটাগরি লিংকটি ভুল হতে পারে অথবা এখনো পণ্য যোগ করা হয়নি।</p>
-            <Link href="/" className="mt-6 inline-flex h-11 items-center rounded-lg bg-emerald-600 px-5 font-extrabold text-white transition hover:bg-emerald-700">
-              হোম পেজে ফিরে যান
-            </Link>
+            <h1 className="text-3xl font-black text-slate-950">{category.nameBn}</h1>
+            <p className="mt-3 text-slate-600">এই ক্যাটাগরিতে এখনো কোনো পণ্য যোগ করা হয়নি।</p>
           </div>
         </section>
       </main>

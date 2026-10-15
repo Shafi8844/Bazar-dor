@@ -4,7 +4,7 @@ import Image from "next/image";
 import { LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import MarqueeText from "react-marquee-text";
 import { authClient } from "@/lib/auth-client";
 import { compactUnitLabel, formatTaka, type Category, type Product, toBanglaNumber } from "@/lib/products";

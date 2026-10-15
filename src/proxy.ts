@@ -12,6 +12,7 @@ export async function proxy(request: NextRequest) {
       "callbackURL",
       `${request.nextUrl.pathname}${request.nextUrl.search}`,
     );
+    signInUrl.searchParams.set("authRequired", "1");
     return NextResponse.redirect(signInUrl);
   }
 
@@ -19,5 +20,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/product/:path*", "/profile/:path*"],
+  matcher: ["/profile/:path*"],
 };

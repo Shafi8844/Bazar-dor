@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 
 export function UpdateProfileForm() {
@@ -49,34 +49,37 @@ export function UpdateProfileForm() {
   return (
     <main className="flex-1 bg-slate-50">
       <section className="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <div className="card border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
+          <div className="card-body p-6 sm:p-8">
           <Link href="/profile" className="text-sm font-extrabold text-emerald-700 hover:text-emerald-800">
             ← আমার প্রোফাইলে ফিরুন
           </Link>
           <h1 className="mt-4 text-3xl font-black text-slate-950">প্রোফাইলের তথ্য আপডেট</h1>
 
           <form className="mt-6 space-y-5" onSubmit={onSubmit}>
-            <label className="block">
-              <span className="text-sm font-bold text-slate-700">নাম</span>
+            <fieldset className="fieldset gap-1">
+              <legend className="fieldset-legend text-sm font-bold text-slate-700">নাম</legend>
               <input
                 name="name"
                 value={name ?? session.user.name}
                 onChange={(event) => setName(event.target.value)}
                 required
                 maxLength={100}
-                className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-3 outline-none focus:border-emerald-500"
+                className="input input-bordered h-12 w-full border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-600 focus:outline-none"
                 placeholder="আপনার নাম"
               />
-            </label>
+            </fieldset>
 
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-emerald-600 px-5 font-extrabold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="btn h-12 border-0 bg-emerald-600 px-5 text-base font-extrabold text-white shadow-sm hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
+              {loading && <span className="loading loading-spinner loading-sm" />}
               {loading ? "আপডেট হচ্ছে..." : "তথ্য আপডেট করুন"}
             </button>
           </form>
+          </div>
         </div>
       </section>
     </main>
