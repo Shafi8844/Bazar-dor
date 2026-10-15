@@ -13,10 +13,7 @@ const globalForMongo = globalThis as typeof globalThis & {
 };
 
 const mongoClient = globalForMongo.mongoClient ?? new MongoClient(mongoUrl);
-
-if (process.env.NODE_ENV !== "production") {
-  globalForMongo.mongoClient = mongoClient;
-}
+globalForMongo.mongoClient = mongoClient;
 
 const mongoDb = mongoClient.db(process.env.MONGO_DB_NAME || "bazar-dor-auth");
 
