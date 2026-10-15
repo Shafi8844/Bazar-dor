@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -30,23 +31,39 @@ export function Navbar({ categories, products }: { categories: Category[]; produ
     <header className="sticky top-0 z-40 border-b border-emerald-100 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="grid size-11 place-items-center rounded-lg bg-emerald-600 text-xl text-white shadow-sm">🛒</span>
-            <span>
-              <span className="block text-2xl font-black text-slate-950">বাজার দর</span>
-              <span className="block text-sm font-semibold text-emerald-700">২৯ আশ্বিন, ১৪৩৩ বঙ্গাব্দ</span>
-            </span>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
+              <span className="grid size-11 place-items-center rounded-lg bg-emerald-600 text-xl text-white shadow-sm">🛒</span>
+              <span>
+                <span className="block text-2xl font-black text-slate-950">বাজার দর</span>
+                <span className="block text-sm font-semibold text-emerald-700">২৯ আশ্বিন, ১৪৩৩ বঙ্গাব্দ</span>
+              </span>
+            </Link>
+          </div>
 
           <div className="flex items-center gap-2">
             {isPending ? (
               <div className="h-10 w-40 animate-pulse rounded-lg bg-slate-100" />
             ) : user ? (
               <>
-                <span className="inline-flex max-w-44 items-center gap-2 truncate rounded-lg border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700">
-                  <UserRound className="size-4 shrink-0" />
+                <Link href="/profile" className="inline-flex max-w-44 items-center gap-2 truncate rounded-lg border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50">
+                  <span className="grid size-7 shrink-0 place-items-center overflow-hidden rounded-full bg-emerald-50 text-emerald-800">
+                    {user.image ? (
+                      <Image
+                        src={user.image}
+                        alt=""
+                        width={28}
+                        height={28}
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-xs font-black">
+                        {user.name.charAt(0).toUpperCase() || <UserRound className="size-4" />}
+                      </span>
+                    )}
+                  </span>
                   {user.name}
-                </span>
+                </Link>
                 <button
                   type="button"
                   onClick={handleLogout}

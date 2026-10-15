@@ -30,33 +30,19 @@ export type Product = {
   }[];
 };
 
-const apiBases = [
-  "https://openapi.programming-hero.com/api/bazardor",
-  "https://api.api-store.workers.dev/api/bazardor",
-  "https://api.abcz.workers.dev/api/bazardor",
-];
+const apiBase = "https://openapi.programming-hero.com/api/bazardor";
 
 async function fetchFromApi<T>(endpoint: string): Promise<T> {
-  let lastError: unknown;
+  const response = await fetch(`${apiBase}${endpoint}`, {
+    cache: "force-cache",
+    next: { revalidate: 1800 },
+  });
 
-  for (const base of apiBases) {
-    try {
-      const response = await fetch(`${base}${endpoint}`, {
-        cache: "force-cache",
-        next: { revalidate: 1800 },
-      });
-
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-
-      return (await response.json()) as T;
-    } catch (error) {
-      lastError = error;
-    }
+  if (!response.ok) {
+    throw new Error(`BazarDor API request failed: ${response.status} ${response.statusText}`);
   }
 
-  throw lastError instanceof Error ? lastError : new Error("BazarDor API unavailable");
+  return (await response.json()) as T;
 }
 
 export async function getCategories() {
