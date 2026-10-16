@@ -12,8 +12,12 @@ const globalForMongo = globalThis as typeof globalThis & {
   mongoClient?: MongoClient;
 };
 
-const mongoClient = globalForMongo.mongoClient ?? new MongoClient(mongoUrl);
-globalForMongo.mongoClient = mongoClient;
+let mongoClient = globalForMongo.mongoClient;
+
+if (!mongoClient) {
+  mongoClient = new MongoClient(mongoUrl);
+  globalForMongo.mongoClient = mongoClient;
+}
 
 const mongoDb = mongoClient.db(process.env.MONGO_DB_NAME || "bazar-dor-auth");
 
@@ -22,10 +26,11 @@ const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const githubClientId = process.env.GITHUB_CLIENT_ID;
 const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
 const authSecret = process.env.BETTER_AUTH_SECRET;
-const deploymentHost = process.env.VERCEL_URL;
-const authBaseURL =
-  process.env.BETTER_AUTH_URL ||
-  (deploymentHost ? `https://${deploymentHost}` : "http://localhost:3000");
+let authBaseURL = "http://localhost:3000";
+
+if (process.env.BETTER_AUTH_URL) {
+  authBaseURL = process.env.BETTER_AUTH_URL;
+}
 
 if (process.env.NODE_ENV === "production" && !authSecret) {
   throw new Error("BETTER_AUTH_SECRET must be configured in production");
