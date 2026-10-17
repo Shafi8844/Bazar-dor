@@ -4,6 +4,8 @@
 
 BazarDor is a Bengali-first market-price dashboard for browsing everyday product prices, comparing market ranges, and seeing which prices are rising or falling.
 
+live Link - https://bazar-dor-coral-nu.vercel.app
+
 ## Technologies
 
 - **Next.js 16** — App Router and server-rendered pages
